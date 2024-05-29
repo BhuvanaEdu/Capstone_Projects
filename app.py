@@ -18,11 +18,12 @@ estimation_data_collection = db['estimations']
 historical_data_collection = db['historical_estimations']
 app.secret_key ='aaab9a987171894123ea78d372c534ff5c5830c189df5a4869a39430c6de3975'
 
-
+#Home page
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Here creating the register form
 @app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == 'POST':
@@ -37,6 +38,7 @@ def register():
             return redirect(url_for('login'))
     return render_template('register.html')
 
+# To login into the page
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
@@ -60,6 +62,7 @@ def login_required(func):
         return func()
     return inner
 
+# dashboard  
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -71,7 +74,7 @@ def dashboard():
     return render_template('dashboard.html')
 
 
-
+# Submit the Estimation Submission
 @app.route('/submit_estimation', methods=["GET","POST"])
 @login_required
 def submit_estimation():
@@ -96,11 +99,11 @@ def submit_estimation():
 
             return jsonify({'message': 'Estimation submitted successfully'}), 201
         return render_template('submit_estimation.html')
-
+    
+# After submission it will give the Estimation calculation
 @app.route('/calculate_estimation', methods=["GET","POST"])
 def calculate_estimation():
     data = request.get_json()
-    # id = data['id']
     tittle = data['tittle']
     complexity = data['complexity']
     size = data['size']
@@ -142,7 +145,6 @@ def calculate_estimation():
 
         # Insert the data into historical_data_collection
     historical_data_collection.insert_one({
-            # '_id': ObjectId(id),
             'tittle':tittle,
             'estimated_effort': estimated_effort,
             'confidence_level': confidence_level,
@@ -151,7 +153,7 @@ def calculate_estimation():
     return jsonify({'estimated_effort': estimated_effort, 'confidence_level': confidence_level,'estimated_range': estimated_range}), 200
 
 
-
+# To get the historical data
 @app.route('/get_historical', methods=["GET"])
 @login_required
 def show_historical_data():
@@ -169,6 +171,7 @@ def show_historical_data():
             flash('User not logged in', 'error')
             return redirect(url_for('login'))
 
+# To update the historical data
 @app.route('/update_estimation_data_collection/<string:id>', methods=["GET", "POST"])
 def update_estimation_data_collection(id):
     task = estimation_data_collection.find_one({'_id':ObjectId(id)})
@@ -207,7 +210,7 @@ def update_estimation_data_collection(id):
             return jsonify("Task not found")
     return render_template('update_estimation_data_collection.html', task=task)
 
-
+# To delete the historical data
 @app.route("/his_delete_item/<string:id>", methods=["GET", "POST"])
 def his_delete_item(id):
     his_data = estimation_data_collection.find_one({"_id":ObjectId(str(id))})
@@ -218,7 +221,7 @@ def his_delete_item(id):
         return "Data Not availeble"
 
 
-
+# To logout from the page
 @app.route('/logout')
 def logout():
     session.pop('email',None)
