@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estimation Form</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Welcome to the submit_estimation form</h1>
+    <div class="container">
+        <form id="estimationForm">
+            <div class="form-group">
+                <label for="tittle">Title:</label>
+                <input type="text" class="form-control" id="tittle" name="tittle">
+            </div>
+            <div class="form-group">
+                <label for="complexity">Complexity:</label>
+                <select class="form-control" id="complexity" name="complexity">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="size">Size:</label>
+                <select class="form-control" id="size" name="size">
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <select class="form-control" id="type" name="type">
+                    <option value="developement">Developement</option>
+                    <option value="testing">Testing</option>
+                    <option value="documentation">Documentation</option>
+                    <option value="deployment">Deployment</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea class="form-control" id="description" name="description"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <div id="estimationResult"></div>
+    </div>
+    
+    <script>
+        document.getElementById('estimationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            var formData = {
+                'tittle': document.getElementById('tittle').value,
+                'complexity': document.getElementById('complexity').value,
+                'size': document.getElementById('size').value,
+                'type': document.getElementById('type').value,
+                'description': document.getElementById('description').value
+            };
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/submit_estimation', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 201) {
+                        calculateEstimation(formData);
+                    } else {
+                        console.error('Failed to submit estimation');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify(formData));
+        });
+
+        function calculateEstimation(formData) {
+            // Send AJAX POST request to calculate_estimation endpoint
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/calculate_estimation', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Update UI with the calculated estimation data
+                        var response = JSON.parse(xhr.responseText);
+                        document.getElementById('estimationResult').innerHTML = 'Estimated Effort: ' + response.estimated_effort + '<br>' +
+                                                                                'Confidence Level: ' + response.confidence_level + '<br>' +
+                                                                                'estimated_range:'  + response.estimated_range;
+                                                                        
+                    } else {
+                        console.error('Failed to calculate estimation');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify(formData));
+        }
+    </script>
+</body>
+</html>
+

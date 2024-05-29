@@ -1,0 +1,58 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Form</title>
+    <title>Submit Form Data with AJAX</title>
+  
+</head>
+
+<body>
+<h1>Update Form</h1>
+
+<form id = 'form_data' action=''  method="post">
+  {% if task %}
+  <div>
+    <label for="title">Title:</label>
+    <input type="text" id="tittle" name="tittle" value= {{task.tittle}}>
+  </div>
+  <div>
+    <label for="complexity">Complexity:</label>
+    <select id="complexity" name="complexity"value= {{task.complexity}} >
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+  </div>
+  <div>
+    <label for="size">Size:</label>
+    <select id="size" name="size" value= {{task.size}} >
+      <option value="small">Small</option>
+      <option value="medium">Medium</option>
+      <option value="large">Large</option>
+    </select>
+  </div>
+  <div>
+    <label for="type">Type:</label>
+    <select id="type" name="type" value ={{task.type}}>
+      <option value="development">Development</option>
+      <option value="testing">Testing</option>
+      <option value="deployment">Deployment</option>
+      <option value="documentation">Documentation</option>
+    </select>
+  </div>
+  <div>
+    <label for="description">Description:</label><br>
+    <textarea id="description" name="description" >{{task.description}}</textarea>
+  </div>
+  <div>
+    <button type="submit">Submit</button>
+  </div>
+  {% endif %}
+</form>
+
+</body>
+</html> 
+
+
+
